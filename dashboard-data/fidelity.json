@@ -1,0 +1,64 @@
+{
+  "note": "Fidelity: per-feature KS tests (real train vs synthetic), correlation-matrix distance, MMD^2 with RBF kernel (median-heuristic bandwidth from real train).",
+  "n_features": 30,
+  "ks": [
+    {
+      "generator": "copula",
+      "mean_ks": 0.0428,
+      "max_ks": 0.0631,
+      "features_p_lt_0.05": 0
+    },
+    {
+      "generator": "llm",
+      "mean_ks": 0.2695,
+      "max_ks": 0.3892,
+      "features_p_lt_0.05": 30
+    }
+  ],
+  "worst_5_features_llm": [
+    {
+      "feature": "symmetry error",
+      "ks_stat": 0.3892,
+      "ks_pvalue": 1.71e-13,
+      "real_mean": 0.0204,
+      "syn_mean": 0.0303
+    },
+    {
+      "feature": "area error",
+      "ks_stat": 0.3617,
+      "ks_pvalue": 1.13e-11,
+      "real_mean": 42.0995,
+      "syn_mean": 90.3393
+    },
+    {
+      "feature": "perimeter error",
+      "ks_stat": 0.3609,
+      "ks_pvalue": 1.26e-11,
+      "real_mean": 2.9323,
+      "syn_mean": 5.1292
+    },
+    {
+      "feature": "concave points error",
+      "ks_stat": 0.3594,
+      "ks_pvalue": 1.56e-11,
+      "real_mean": 0.0119,
+      "syn_mean": 0.017
+    },
+    {
+      "feature": "radius error",
+      "ks_stat": 0.3408,
+      "ks_pvalue": 2.17e-10,
+      "real_mean": 0.4133,
+      "syn_mean": 0.7062
+    }
+  ],
+  "correlation_matrix_distance": {
+    "copula": 1.4168,
+    "llm": 15.7272
+  },
+  "mmd_squared": {
+    "gamma": 2.109e-06,
+    "copula": 0.00078,
+    "llm": 0.08195
+  }
+}
