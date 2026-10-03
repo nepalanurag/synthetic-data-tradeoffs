@@ -1,0 +1,32 @@
+{
+  "note": "Breast cancer Wisconsin dataset (scikit-learn), 70/30 stratified split, seed 20261002, plus the two synthetic sets.",
+  "n_features": 30,
+  "target": "0 = malignant / 1 = benign",
+  "seed": 20261002,
+  "sets": [
+    {
+      "name": "train",
+      "rows": 398,
+      "target_mean": 0.628,
+      "nans": 0
+    },
+    {
+      "name": "holdout",
+      "rows": 171,
+      "target_mean": 0.626,
+      "nans": 0
+    },
+    {
+      "name": "copula_synthetic",
+      "rows": 500,
+      "target_mean": 0.592,
+      "nans": 0
+    },
+    {
+      "name": "llm_synthetic",
+      "rows": 126,
+      "target_mean": 0.476,
+      "nans": 0
+    }
+  ]
+}
