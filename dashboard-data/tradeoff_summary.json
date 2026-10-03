@@ -1,0 +1,17 @@
+{
+  "note": "The tradeoff in one row per generator: fidelity (correlation-matrix distance) vs utility loss (RF TSTR AUC drop) vs privacy leakage (MI AUC).",
+  "generators": [
+    {
+      "generator": "copula",
+      "corr_dist": 1.4168,
+      "auc_drop_rf": 0.0025,
+      "mi_auc": 0.5421
+    },
+    {
+      "generator": "llm",
+      "corr_dist": 15.7272,
+      "auc_drop_rf": 0.0303,
+      "mi_auc": 0.5595
+    }
+  ]
+}
