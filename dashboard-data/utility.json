@@ -1,0 +1,73 @@
+{
+  "note": "Utility (TSTR): logistic regression and random forest (300 trees) trained on each set, scored on the real holdout. AUC differences use bootstrap 95% CIs (2000 resamples).",
+  "holdout_auc": [
+    {
+      "model": "logreg",
+      "trained_on": "real",
+      "auc": 0.9885
+    },
+    {
+      "model": "logreg",
+      "trained_on": "copula",
+      "auc": 0.9844
+    },
+    {
+      "model": "logreg",
+      "trained_on": "llm",
+      "auc": 0.9194
+    },
+    {
+      "model": "rf",
+      "trained_on": "real",
+      "auc": 0.9849
+    },
+    {
+      "model": "rf",
+      "trained_on": "copula",
+      "auc": 0.9824
+    },
+    {
+      "model": "rf",
+      "trained_on": "llm",
+      "auc": 0.9546
+    }
+  ],
+  "auc_diff_vs_real": [
+    {
+      "model": "logreg",
+      "trained_on": "copula",
+      "auc_diff": -0.0041,
+      "ci95": [
+        -0.0118,
+        0.0032
+      ]
+    },
+    {
+      "model": "logreg",
+      "trained_on": "llm",
+      "auc_diff": -0.0691,
+      "ci95": [
+        -0.1083,
+        -0.0378
+      ]
+    },
+    {
+      "model": "rf",
+      "trained_on": "copula",
+      "auc_diff": -0.0025,
+      "ci95": [
+        -0.0104,
+        0.0037
+      ]
+    },
+    {
+      "model": "rf",
+      "trained_on": "llm",
+      "auc_diff": -0.0303,
+      "ci95": [
+        -0.056,
+        -0.0114
+      ]
+    }
+  ]
+}
