@@ -1,0 +1,34 @@
+{
+  "note": "Privacy: distance to closest record (DCR, standardized features) and a simple membership-inference attack (negative nearest-neighbor distance to the synthetic set as the score; 0.5 = no signal).",
+  "dcr": [
+    {
+      "set": "copula synthetic->train",
+      "mean": 2.567,
+      "median": 2.298,
+      "p5": 1.503
+    },
+    {
+      "set": "llm synthetic->train",
+      "mean": 3.716,
+      "median": 2.545,
+      "p5": 1.361
+    },
+    {
+      "set": "real->real baseline",
+      "mean": 2.5,
+      "median": 2.211,
+      "p5": 1.329
+    },
+    {
+      "set": "holdout->train",
+      "mean": 2.708,
+      "median": 2.226,
+      "p5": 1.393
+    }
+  ],
+  "membership_inference_auc": {
+    "copula": 0.5421,
+    "llm": 0.5595,
+    "no_signal": 0.5
+  }
+}
