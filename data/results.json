@@ -1,0 +1,150 @@
+{
+  "seed": 20261002,
+  "train_n": 398,
+  "holdout_n": 171,
+  "n_syn_copula": 500,
+  "n_syn_llm": 126,
+  "llm_rejections": [
+    {
+      "batch": "batch_003.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_007.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_011.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_021.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    },
+    {
+      "batch": "batch_022.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    }
+  ],
+  "llm_batches_accepted": 21,
+  "llm_batches_rejected": 5,
+  "llm_quarantined": [
+    {
+      "file": "batch_003.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_007.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_011.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_021.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    },
+    {
+      "file": "batch_022.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    }
+  ],
+  "ks_copula_mean": 0.0427641541038526,
+  "ks_copula_max": 0.06312562814070352,
+  "ks_copula_p_below_05": 0,
+  "ks_llm_mean": 0.26952354364414666,
+  "ks_llm_max": 0.3892079444843264,
+  "ks_llm_p_below_05": 30,
+  "corr_dist_copula": 1.4168035444008038,
+  "corr_dist_llm": 15.727157893548688,
+  "mmd_gamma": 2.109063395766486e-06,
+  "mmd_copula": 0.0007842651232548015,
+  "mmd_llm": 0.08195373377066473,
+  "tstr": {
+    "logreg_real": {
+      "auc": 0.9884637850467289,
+      "ci_low": 0.9735694534704435,
+      "ci_high": 0.9978896357945654
+    },
+    "logreg_copula": {
+      "auc": 0.984375,
+      "ci_low": 0.968660699887115,
+      "ci_high": 0.9945255446706186
+    },
+    "logreg_llm": {
+      "auc": 0.919392523364486,
+      "ci_low": 0.8754644412191581,
+      "ci_high": 0.9562982572388513
+    },
+    "logreg_copula_vs_real": {
+      "auc_diff": -0.004088785046728938,
+      "ci_low": -0.011761686950366225,
+      "ci_high": 0.0031746872477805663
+    },
+    "logreg_llm_vs_real": {
+      "auc_diff": -0.06907126168224298,
+      "ci_low": -0.10833156631586939,
+      "ci_high": -0.03783689637899363
+    },
+    "rf_real": {
+      "auc": 0.9848860981308412,
+      "ci_low": 0.9696623678808222,
+      "ci_high": 0.995413950109389
+    },
+    "rf_copula": {
+      "auc": 0.9824036214953271,
+      "ci_low": 0.9651236785954119,
+      "ci_high": 0.9954299924452279
+    },
+    "rf_llm": {
+      "auc": 0.9545852803738317,
+      "ci_low": 0.9193043090904958,
+      "ci_high": 0.9802514615920537
+    },
+    "rf_copula_vs_real": {
+      "auc_diff": -0.0024824766355140415,
+      "ci_low": -0.010442460364038267,
+      "ci_high": 0.003650982706989582
+    },
+    "rf_llm_vs_real": {
+      "auc_diff": -0.030300817757009435,
+      "ci_low": -0.05600839640737094,
+      "ci_high": -0.011365984308365124
+    }
+  },
+  "dcr_copula": {
+    "syn_mean": 2.567155801999523,
+    "syn_median": 2.297966854848191,
+    "syn_p5": 1.502935396349907,
+    "train_mean": 2.4995872762628792,
+    "train_median": 2.211252511528362,
+    "train_p5": 1.3293577809296204,
+    "holdout_mean": 2.7078002251565803,
+    "holdout_median": 2.2264987261853117,
+    "holdout_p5": 1.3925068756874592
+  },
+  "dcr_llm": {
+    "syn_mean": 3.7157563130283133,
+    "syn_median": 2.5446134632221824,
+    "syn_p5": 1.3611214656818387,
+    "train_mean": 2.4995872762628792,
+    "train_median": 2.211252511528362,
+    "train_p5": 1.3293577809296204,
+    "holdout_mean": 2.7078002251565803,
+    "holdout_median": 2.2264987261853117,
+    "holdout_p5": 1.3925068756874592
+  },
+  "mi_auc_copula": 0.5420964471480209,
+  "mi_auc_llm": 0.5595374533486145
+}

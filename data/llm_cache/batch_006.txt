@@ -1,0 +1,4 @@
+target,mean radius,mean texture,mean perimeter,mean area,mean smoothness,mean compactness,mean concavity,mean concave points,mean symmetry,mean fractal dimension,radius error,texture error,perimeter error,area error,smoothness error,compactness error,concavity error,concave points error,symmetry error,fractal dimension error,worst radius,worst texture,worst perimeter,worst area,worst smoothness,worst compactness,worst concavity,worst concave points,worst symmetry,worst fractal dimension
+1,13.25,23.14,86.0,551.4,0.11714,0.1444,0.11585,0.06553,0.1983,0.06830,0.4851,1.543,3.468,48.01,0.0076296,0.03816,0.05436,0.01633,0.02640,0.0055172,16.59,30.31,108.9,848.3,0.1554,0.3475,0.3060,0.1568,0.3468,0.09618
+0,19.38,20.09,127.3,1154.5,0.09341,0.1345,0.10656,0.08051,0.1984,0.05837,0.7302,1.266,5.196,89.55,0.0058988,0.02982,0.03362,0.01538,0.01777,0.0033069,22.75,27.08,150.3,1586.2,0.1293,0.3013,0.3364,0.1802,0.2872,0.07682
+1,11.23,17.29,72.4,386.6,0.09459,0.0883,0.04368

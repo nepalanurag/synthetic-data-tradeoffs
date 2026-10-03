@@ -1,0 +1,58 @@
+{
+  "batches_accepted": 21,
+  "batches_rejected": 5,
+  "rejections": [
+    {
+      "batch": "batch_003.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_007.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_011.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "batch": "batch_021.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    },
+    {
+      "batch": "batch_022.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    }
+  ],
+  "quarantined": [
+    {
+      "file": "batch_003.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_007.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_011.txt",
+      "reason": "no valid data rows after header",
+      "skipped_prose": 1
+    },
+    {
+      "file": "batch_021.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    },
+    {
+      "file": "batch_022.txt",
+      "reason": "worst fractal dimension=0 out of range [0.05504, 0.2075]",
+      "skipped_prose": 0
+    }
+  ]
+}

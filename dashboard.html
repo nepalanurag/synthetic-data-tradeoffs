@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synthetic data tradeoffs: fidelity, utility, privacy</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+         max-width: 960px; margin: 0 auto; padding: 24px; color: #222; line-height: 1.55; }
+  h1 { font-size: 1.7em; } h2 { border-bottom: 2px solid #ddd; padding-bottom: 6px; margin-top: 44px; }
+  table { border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: right; }
+  th { background: #f4f4f4; } td:first-child, th:first-child { text-align: left; }
+  .plot { width: 100%; height: 460px; }
+  .kpi { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .kpi div { background: #f7f7f7; border: 1px solid #ddd; padding: 10px 16px; border-radius: 6px; }
+  .kpi b { font-size: 1.25em; display: block; }
+  nav a { margin-right: 18px; }
+  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<nav><a href="#overview">Overview</a><a href="#methods">Methods</a>
+<a href="#results">Results</a><a href="#limitations">Limitations</a></nav>
+
+<h1>Synthetic tabular data: the fidelity-utility-privacy tradeoff</h1>
+<p>Two generators, one dataset (breast cancer Wisconsin, 569 rows, 30 numeric
+features), three axes of evaluation. The copula is fit on 398 training rows;
+the LLM (Gemini flash) saw the schema plus 8 example rows. 500 synthetic rows
+from the copula, 126 validated rows from the LLM (21 batches accepted, 5
+rejected). A fixed 171-row holdout, never shown to either generator, anchors the
+utility and privacy tests. Seed 20261002 throughout.</p>
+
+<h2 id="overview">Overview</h2>
+<div class="kpi">
+  <div><b>1.4168 vs 15.7272</b>correlation-matrix distance (copula vs LLM; lower is better)</div>
+  <div><b>0.003 vs 0.030</b>random-forest TSTR AUC drop vs training on real data</div>
+  <div><b>0.542 vs 0.560</b>membership-inference attack AUC (0.5 = no leakage)</div>
+</div>
+<p>Bottom line: the copula wins on fidelity by construction and its TSTR utility
+gap vs training on real data is within noise; the LLM rows are noisier on the
+margins and cost real AUC (-0.0303, CI fully below zero). Privacy is a wash:
+LLM rows sit further from real records by DCR, but the weak
+membership-inference attack found slightly more signal in them (0.560 vs
+0.542). Neither is a free lunch.</p>
+
+<h2 id="methods">Methods</h2>
+<h3>Generator A: Gaussian copula (implemented by hand)</h3>
+<p>Rank-transform each feature to uniform via the empirical CDF, map to
+standard normals with the probit, fit mean and covariance, sample, and map
+back through the inverse empirical CDF. Fit separately per class; class
+labels sampled from the training prevalence. This reproduces every margin
+exactly and the rank correlations, but nothing beyond the correlation
+matrix.</p>
+<h3>Generator B: LLM row synthesis</h3>
+<p>Gemini flash prompted with column names, observed ranges, the target
+meaning, and 8 real example rows; asked for batches of 20 CSV rows. Batches
+were validated (column count, numeric cells, 0/1 target, in-range values)
+and rejected batches were retried: 21 accepted,
+5 rejected. Raw responses are cached in the repo
+so the run is reproducible.</p>
+<h3>Evaluation</h3>
+<ul>
+<li><b>Fidelity:</b> per-feature two-sample KS tests; correlation-matrix
+distance (Frobenius norm); MMD with RBF kernel, bandwidth from the median
+heuristic on the real train set (gamma=2.109e-06).</li>
+<li><b>Utility (TSTR):</b> logistic regression and random forest trained on
+each synthetic set, AUC on the real holdout; train-on-real baseline; AUC
+differences with bootstrap 95% CIs (2000 resamples).</li>
+<li><b>Privacy:</b> distance-to-closest-record distributions
+(synthetic-to-train vs real-to-real baseline); a threshold membership-inference
+attack on nearest-neighbor distance to the synthetic set.</li>
+</ul>
+
+<h2 id="results">Results</h2>
+<h3>Fidelity: per-feature KS statistics</h3>
+<div id="ksplot" class="plot"></div>
+<p>Mean KS: copula 0.0428 (max 0.0631,
+0/30 features with p &lt; 0.05); LLM
+0.2695 (max 0.3892,
+30/30 with p &lt; 0.05).</p>
+<h3>Fidelity: joint structure</h3>
+<table>
+<tr><th></th><th>Correlation-matrix distance</th><th>MMD^2 (RBF)</th></tr>
+<tr><td>Copula</td><td>1.4168</td><td>0.00078</td></tr>
+<tr><td>LLM</td><td>15.7272</td><td>0.08195</td></tr>
+</table>
+<h3>Utility: train on synthetic, test on real</h3>
+<div id="tstrplot" class="plot"></div>
+<table>
+<tr><th>Model</th><th>Trained on</th><th>Holdout AUC</th><th>95% CI</th></tr>
+<tr><td>Random forest</td><td>Real train</td><td>0.9849</td><td>[0.9697, 0.9954]</td></tr><tr><td>Random forest</td><td>Copula</td><td>0.9824</td><td>[0.9651, 0.9954]</td></tr><tr><td>Random forest</td><td>LLM</td><td>0.9546</td><td>[0.9193, 0.9803]</td></tr><tr><td>Logistic regression</td><td>Real train</td><td>0.9885</td><td>[0.9736, 0.9979]</td></tr><tr><td>Logistic regression</td><td>Copula</td><td>0.9844</td><td>[0.9687, 0.9945]</td></tr><tr><td>Logistic regression</td><td>LLM</td><td>0.9194</td><td>[0.8755, 0.9563]</td></tr>
+</table>
+<h3>Privacy</h3>
+<table>
+<tr><th></th><th>DCR median (synthetic to train)</th><th>DCR median (real to real)</th><th>MI attack AUC</th></tr>
+<tr><td>Copula</td><td>2.298</td><td>2.211</td><td>0.542</td></tr>
+<tr><td>LLM</td><td>2.545</td><td>2.211</td><td>0.560</td></tr>
+</table>
+<p>Real holdout rows sit at median distance 2.226
+from the train set; synthetic rows closer than that are hugging the training data.</p>
+<h3>The 3-way tradeoff</h3>
+<div id="tradeplot" class="plot"></div>
+
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>One dataset, fully numeric, 569 rows. Results may not carry to mixed-type,
+high-dimensional, or heavy-tailed data.</li>
+<li>The membership-inference attack is deliberately simple (distance
+threshold). A stronger attack could find more leakage; these numbers are a
+lower bound on risk, not a certificate of safety.</li>
+<li>LLM synthesis depends on the model version and prompt; the raw responses
+are cached in the repo so this exact run is reproducible, but a rerun with a
+different model may differ.</li>
+<li>TSTR measures one downstream task (binary classification AUC). A different
+task could rank the generators differently.</li>
+<li>The copula is fit per class, which helps classification utility but would
+be the wrong choice if the target itself needed joint modeling.</li>
+</ul>
+<p>Code, data, and the executed analysis notebook are in the
+<a href="https://github.com/nepalanurag/synthetic-data-tradeoffs">GitHub repo</a>.
+Seed 20261002 everywhere; no numbers on this page are invented.</p>
+
+<script>
+const KS = {"features": ["mean radius", "mean texture", "mean perimeter", "mean area", "mean smoothness", "mean compactness", "mean concavity", "mean concave points", "mean symmetry", "mean fractal dimension", "radius error", "texture error", "perimeter error", "area error", "smoothness error", "compactness error", "concavity error", "concave points error", "symmetry error", "fractal dimension error", "worst radius", "worst texture", "worst perimeter", "worst area", "worst smoothness", "worst compactness", "worst concavity", "worst concave points", "worst symmetry", "worst fractal dimension"], "copula": [0.0631, 0.0363, 0.0554, 0.0562, 0.0341, 0.0361, 0.048, 0.0553, 0.0525, 0.0444, 0.0391, 0.026, 0.0445, 0.043, 0.0263, 0.03, 0.0266, 0.0352, 0.0411, 0.0325, 0.0528, 0.0303, 0.0536, 0.0493, 0.031, 0.0444, 0.0494, 0.0443, 0.0554, 0.0468], "llm": [0.2663, 0.1961, 0.2638, 0.2714, 0.159, 0.2735, 0.1842, 0.1997, 0.3311, 0.1618, 0.3408, 0.2872, 0.3609, 0.3617, 0.2325, 0.3262, 0.3274, 0.3594, 0.3892, 0.3333, 0.2986, 0.2162, 0.2948, 0.2915, 0.1906, 0.2277, 0.1862, 0.2362, 0.3113, 0.2071]};
+Plotly.newPlot("ksplot", [
+  {y: KS.features, x: KS.copula, type: "bar", orientation: "h", name: "Copula", marker: {color: "#1f77b4"}},
+  {y: KS.features, x: KS.llm, type: "bar", orientation: "h", name: "LLM", marker: {color: "#d62728"}}
+], {title: "Per-feature KS statistic (lower = margins match better)",
+    xaxis: {title: "KS statistic"}, barmode: "group", height: 560,
+    margin: {l: 190}});
+
+const TSTR = [{"model": "Random forest", "trained_on": "Real train", "auc": 0.9849, "lo": 0.9697, "hi": 0.9954}, {"model": "Random forest", "trained_on": "Copula", "auc": 0.9824, "lo": 0.9651, "hi": 0.9954}, {"model": "Random forest", "trained_on": "LLM", "auc": 0.9546, "lo": 0.9193, "hi": 0.9803}, {"model": "Logistic regression", "trained_on": "Real train", "auc": 0.9885, "lo": 0.9736, "hi": 0.9979}, {"model": "Logistic regression", "trained_on": "Copula", "auc": 0.9844, "lo": 0.9687, "hi": 0.9945}, {"model": "Logistic regression", "trained_on": "LLM", "auc": 0.9194, "lo": 0.8755, "hi": 0.9563}];
+{
+  const models = [...new Set(TSTR.map(r => r.model))];
+  const traces = models.map((m, i) => {
+    const rs = TSTR.filter(r => r.model === m);
+    return {y: rs.map(r => r.trained_on), x: rs.map(r => r.auc),
+      error_x: {type: "data",
+        array: rs.map(r => r.hi - r.auc), arrayminus: rs.map(r => r.auc - r.lo)},
+      type: "scatter", mode: "markers", name: m,
+      marker: {size: 10, color: ["#1f77b4", "#d62728"][i]}};
+  });
+  Plotly.newPlot("tstrplot", traces,
+    {title: "TSTR: AUC on the real holdout (95% bootstrap CI)",
+      xaxis: {title: "AUC", range: [0.9, 1.0]}});
+}
+
+const TO = {"copula": {"corr": 1.4168, "drop": 0.0025, "mi": 0.5421}, "llm": {"corr": 15.7272, "drop": 0.0303, "mi": 0.5595}};
+Plotly.newPlot("tradeplot", [
+  {x: [TO.copula.corr], y: [TO.copula.drop], mode: "markers+text", name: "Copula",
+    text: ["Copula (MI AUC " + TO.copula.mi + ")"], textposition: "top center",
+    marker: {size: 18 + 400 * Math.max(TO.copula.mi - 0.5, 0), color: "#1f77b4"}},
+  {x: [TO.llm.corr], y: [TO.llm.drop], mode: "markers+text", name: "LLM",
+    text: ["LLM (MI AUC " + TO.llm.mi + ")"], textposition: "top center",
+    marker: {size: 18 + 400 * Math.max(TO.llm.mi - 0.5, 0), color: "#d62728"}}
+], {title: "Fidelity vs utility; bubble size = privacy leakage (MI AUC - 0.5)",
+    xaxis: {title: "Correlation-matrix distance (lower is better)"},
+    yaxis: {title: "TSTR AUC drop vs train-on-real, RF (lower is better)"}});
+</script>
+</body>
+</html>
