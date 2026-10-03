@@ -42,11 +42,16 @@ rng = np.random.default_rng(SEED)
 ROOT = os.path.abspath(os.path.join(os.getcwd(), "..")) if os.path.basename(os.getcwd()) == "notebooks" else os.getcwd()
 sys.path.insert(0, os.path.join(ROOT, "src"))
 DATA = os.path.join(ROOT, "data")
-print("project root:", ROOT)
 """)
 
 md("""
-## The dataset
+## Setup (the data)
+
+The input files are all committed (`data/train.csv`, `data/holdout.csv`,
+`data/copula_synthetic.csv`, `data/llm_synthetic.csv`, `data/llm_cache/`,
+`data/results.json`), so this notebook reruns without new API calls.
+
+### The dataset
 
 I use the breast cancer Wisconsin dataset (scikit-learn, 569 rows, 30 numeric
 features of cell nuclei, target 0 = malignant / 1 = benign). Why this one:
@@ -73,7 +78,10 @@ for name, df in [("train", train), ("holdout", hold), ("copula", cop), ("llm", l
 """)
 
 md("""
-## Generator A: a Gaussian copula, implemented by hand
+## Method""")
+
+md("""
+### Generator A: a Gaussian copula, implemented by hand
 
 The idea: keep every univariate margin exactly as observed (rank transform),
 and model only the dependence structure with a multivariate normal in
@@ -115,7 +123,7 @@ for c in (0, 1):
 """)
 
 md("""
-## Generator B: LLM row synthesis
+### Generator B: LLM row synthesis
 
 The second generator is Gemini (flash tier), prompted with the schema
 (column names, observed ranges, what the target means) plus 8 real example
@@ -140,7 +148,10 @@ print("LLM NaNs:", int(llm.isna().sum().sum()))
 """)
 
 md("""
-## Fidelity: does the synthetic data look real?
+## Results""")
+
+md("""
+### Fidelity: does the synthetic data look real?
 
 Three checks, from weak to strong:
 
@@ -174,7 +185,7 @@ print(f"MMD^2 (gamma={gamma:.4g}): copula={mmd_c:.5f}  llm={mmd_l:.5f}")
 """)
 
 md("""
-## Utility: train on synthetic, test on real (TSTR)
+### Utility: train on synthetic, test on real (TSTR)
 
 The practical question: if I train a classifier on synthetic data and
 deploy it on real data, how much AUC do I lose versus training on real data?
@@ -209,7 +220,7 @@ print(pd.DataFrame(rows, columns=["model", "trained_on", "holdout_auc"]).to_stri
 """)
 
 md("""
-## Privacy: how close is synthetic to real?
+### Privacy: how close is synthetic to real?
 
 Two checks:
 
@@ -238,7 +249,7 @@ print(f"\\nMI attack AUC: copula={membership_inference_auc(X_train, X_hold, X_co
 """)
 
 md("""
-## The tradeoff in one picture
+### The tradeoff in one picture
 
 Fidelity (correlation-matrix distance) on x, utility loss (TSTR AUC drop for
 the random forest) on y, bubble size proportional to privacy leakage
@@ -264,7 +275,7 @@ print(json.dumps({k: {kk: round(vv, 4) for kk, vv in v.items()} for k, v in summ
 """)
 
 md("""
-## What I take away from this
+## Takeaway
 
 - The copula is the fidelity winner by construction: exact margins and an
   explicit correlation fit. Its failure mode is structural: anything not in
