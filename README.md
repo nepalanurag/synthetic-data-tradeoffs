@@ -12,6 +12,10 @@ real distribution closely (fidelity), keep downstream models working (utility),
 or stay far from real records (privacy). Pushing one usually costs the others.
 This project quantifies that on a real dataset with real computed numbers.
 
+## Interactive dashboard
+
+Results are easiest to explore in the interactive dashboard: https://anurag-nepal-portfolio.vercel.app/ai-lab/synthetic-data-tradeoffs/
+
 ## Data
 
 The breast cancer Wisconsin dataset (scikit-learn, 569 rows, 30 numeric
