@@ -6,21 +6,63 @@
 <title>Synthetic data tradeoffs: fidelity, utility, privacy</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
-  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-         max-width: 960px; margin: 0 auto; padding: 24px; color: #222; line-height: 1.55; }
-  h1 { font-size: 1.7em; } h2 { border-bottom: 2px solid #ddd; padding-bottom: 6px; margin-top: 44px; }
-  table { border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
-  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: right; }
-  th { background: #f4f4f4; } td:first-child, th:first-child { text-align: left; }
-  .plot { width: 100%; height: 460px; }
-  .kpi { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
-  .kpi div { background: #f7f7f7; border: 1px solid #ddd; padding: 10px 16px; border-radius: 6px; }
-  .kpi b { font-size: 1.25em; display: block; }
-  nav a { margin-right: 18px; }
-  code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; }
+  :root {
+    --bg: #f9fafb;
+    --card: #ffffff;
+    --ink: #111827;
+    --muted: #4b5563;
+    --line: #e5e7eb;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); background: var(--bg); margin: 0; line-height: 1.65;
+  }
+  .topnav {
+    background: var(--card); border-bottom: 1px solid var(--line);
+    padding: 14px 24px; display: flex; align-items: center; gap: 14px;
+    font-size: 0.95rem; position: sticky; top: 0; z-index: 10;
+  }
+  .topnav a { color: var(--ink); text-decoration: none; font-weight: 600; }
+  .topnav a:hover { color: var(--accent); }
+  .topnav span { color: var(--muted); }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 24px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 0.3em; letter-spacing: -0.01em; }
+  h2 { font-size: 1.4rem; margin: 2em 0 0.6em; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 1.1rem; margin: 1.6em 0 0.5em; }
+  .byline, .sub { color: var(--muted); font-size: 0.95rem; }
+  a { color: var(--accent); }
+  p { margin: 0.9em 0; }
+  section { margin-bottom: 1em; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; font-size: 0.9em; }
+  .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin: 1.4em 0; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .stat .v { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .stat .l { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin: 1.2em 0; }
+  .card h3 { margin-top: 0; }
+  .desc { color: var(--muted); font-size: 0.9rem; }
+  .best { font-size: 0.95rem; margin: 12px 0 0; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin: 1.2em 0; display: grid; gap: 10px; }
+  .kpi b { color: var(--accent); margin-right: 8px; }
+  .plot, .chart { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 1.2em 0; }
+  .chart { width: 100%; height: 420px; }
+  table { border-collapse: collapse; width: 100%; margin: 1.2em 0; font-size: 0.95rem; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+  th { background: var(--accent-soft); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  .note { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 12px 16px; margin: 1.2em 0; font-size: 0.95rem; border-radius: 0 8px 8px 0; }
+  img.fig { max-width: 100%; border: 1px solid var(--line); border-radius: 12px; margin: 1em 0; }
+  ul, ol { padding-left: 1.4em; }
+  li { margin: 0.4em 0; }
+  footer { margin-top: 3em; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 16px; }
 </style>
 </head>
 <body>
+<nav class="topnav"><a href="https://anurag-nepal-portfolio.vercel.app/">&larr; Anurag Nepal</a><span>Projects</span></nav>
+<div class="page">
 <nav><a href="#overview">Overview</a><a href="#methods">Methods</a>
 <a href="#results">Results</a><a href="#limitations">Limitations</a></nav>
 
@@ -125,7 +167,7 @@ Seed 20261002 everywhere; no numbers on this page are invented.</p>
 <script>
 const KS = {"features": ["mean radius", "mean texture", "mean perimeter", "mean area", "mean smoothness", "mean compactness", "mean concavity", "mean concave points", "mean symmetry", "mean fractal dimension", "radius error", "texture error", "perimeter error", "area error", "smoothness error", "compactness error", "concavity error", "concave points error", "symmetry error", "fractal dimension error", "worst radius", "worst texture", "worst perimeter", "worst area", "worst smoothness", "worst compactness", "worst concavity", "worst concave points", "worst symmetry", "worst fractal dimension"], "copula": [0.0631, 0.0363, 0.0554, 0.0562, 0.0341, 0.0361, 0.048, 0.0553, 0.0525, 0.0444, 0.0391, 0.026, 0.0445, 0.043, 0.0263, 0.03, 0.0266, 0.0352, 0.0411, 0.0325, 0.0528, 0.0303, 0.0536, 0.0493, 0.031, 0.0444, 0.0494, 0.0443, 0.0554, 0.0468], "llm": [0.2663, 0.1961, 0.2638, 0.2714, 0.159, 0.2735, 0.1842, 0.1997, 0.3311, 0.1618, 0.3408, 0.2872, 0.3609, 0.3617, 0.2325, 0.3262, 0.3274, 0.3594, 0.3892, 0.3333, 0.2986, 0.2162, 0.2948, 0.2915, 0.1906, 0.2277, 0.1862, 0.2362, 0.3113, 0.2071]};
 Plotly.newPlot("ksplot", [
-  {y: KS.features, x: KS.copula, type: "bar", orientation: "h", name: "Copula", marker: {color: "#1f77b4"}},
+  {y: KS.features, x: KS.copula, type: "bar", orientation: "h", name: "Copula", marker: {color: "#2563eb"}},
   {y: KS.features, x: KS.llm, type: "bar", orientation: "h", name: "LLM", marker: {color: "#d62728"}}
 ], {title: "Per-feature KS statistic (lower = margins match better)",
     xaxis: {title: "KS statistic"}, barmode: "group", height: 560,
@@ -140,7 +182,7 @@ const TSTR = [{"model": "Random forest", "trained_on": "Real train", "auc": 0.98
       error_x: {type: "data",
         array: rs.map(r => r.hi - r.auc), arrayminus: rs.map(r => r.auc - r.lo)},
       type: "scatter", mode: "markers", name: m,
-      marker: {size: 10, color: ["#1f77b4", "#d62728"][i]}};
+      marker: {size: 10, color: ["#2563eb", "#d62728"][i]}};
   });
   Plotly.newPlot("tstrplot", traces,
     {title: "TSTR: AUC on the real holdout (95% bootstrap CI)",
@@ -151,7 +193,7 @@ const TO = {"copula": {"corr": 1.4168, "drop": 0.0025, "mi": 0.5421}, "llm": {"c
 Plotly.newPlot("tradeplot", [
   {x: [TO.copula.corr], y: [TO.copula.drop], mode: "markers+text", name: "Copula",
     text: ["Copula (MI AUC " + TO.copula.mi + ")"], textposition: "top center",
-    marker: {size: 18 + 400 * Math.max(TO.copula.mi - 0.5, 0), color: "#1f77b4"}},
+    marker: {size: 18 + 400 * Math.max(TO.copula.mi - 0.5, 0), color: "#2563eb"}},
   {x: [TO.llm.corr], y: [TO.llm.drop], mode: "markers+text", name: "LLM",
     text: ["LLM (MI AUC " + TO.llm.mi + ")"], textposition: "top center",
     marker: {size: 18 + 400 * Math.max(TO.llm.mi - 0.5, 0), color: "#d62728"}}
@@ -159,5 +201,6 @@ Plotly.newPlot("tradeplot", [
     xaxis: {title: "Correlation-matrix distance (lower is better)"},
     yaxis: {title: "TSTR AUC drop vs train-on-real, RF (lower is better)"}});
 </script>
+</div>
 </body>
 </html>
