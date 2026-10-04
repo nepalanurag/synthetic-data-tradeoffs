@@ -106,7 +106,7 @@ def sanity_report(X_syn, y_syn, X_train, feature_names):
         "n_nan": int(np.isnan(X_syn).sum()),
         "n_inf": int(np.isinf(X_syn).sum()),
         "class_counts": {str(k): int((y_syn == k).sum()) for k in np.unique(y_syn)},
-        "train_prevalence": {
+        "syn_prevalence": {
             str(k): float(np.mean(y_syn == k)) for k in np.unique(y_syn)
         },
         "out_of_train_range": {},

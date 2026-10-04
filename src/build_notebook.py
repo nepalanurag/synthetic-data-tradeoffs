@@ -113,8 +113,8 @@ X_train = train[feature_names].values
 X_cop = cop[feature_names].values
 san = sanity_report(X_cop, cop["target"].values, X_train, feature_names)
 print("NaNs:", san["n_nan"], "| Infs:", san["n_inf"])
-print("class counts:", san["class_counts"], "| train prevalence:",
-      {k: round(v, 3) for k, v in san["train_prevalence"].items()})
+print("class counts:", san["class_counts"], "| synthetic prevalence:",
+      {k: round(v, 3) for k, v in san["syn_prevalence"].items()})
 print("features with any value outside the train range:", san["out_of_train_range"] or "none")
 # Per-class means: does the copula keep the class-conditional locations?
 for c in (0, 1):
