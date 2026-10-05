@@ -72,7 +72,8 @@ Utility, TSTR AUC on the real holdout (95% bootstrap CI):
   LLM 0.9546 [0.9193, 0.9803].
 - Logistic regression: real 0.9885, copula 0.9844,
   LLM 0.9194.
-- AUC drop vs train-on-real (RF): copula +0.0025, LLM +0.0303.
+- AUC gap vs train-on-real (RF): copula -0.0025, LLM -0.0303
+  (negative = below train-on-real; copula gap within noise, 95% CI crossing zero).
 
 Privacy:
 - DCR median, synthetic to train: copula 2.298, LLM 2.545
